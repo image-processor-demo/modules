@@ -7,12 +7,13 @@ resource "aws_lambda_function" "image-processor-function" {
   timeout       = 30
 
   # Reference artifact from S3 (uploaded by app CI/CD)
-  s3_bucket = aws_s3_bucket.artifacts-bucket.bucket
-  s3_key    = "lambda/${var.filename}"
+  s3_bucket = var.artifacts_bucket_name
+  s3_key    = "lambda/${var.artifact_key}"
 
   environment {
     variables = {
-      ENVIRONMENT = var.environment
+      ENV               = var.environment
+      API_SHARED_SECRET = var.api_shared_secret
     }
   }
 }

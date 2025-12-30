@@ -6,10 +6,27 @@ paths:
   /process:
     post:
       summary: Process an image
+      parameters:
+        - in: header
+          name: X-Origin-Verify
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Successful response
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
       x-amazon-apigateway-integration:
-        uri: arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/${lambda_function_arn}/invocations
-        httpMethod: POST
         type: aws_proxy
+        httpMethod: POST
+        uri: arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/${lambda_function_arn}/invocations
+# --- API Gateway extensions for request validation ---
+x-amazon-apigateway-request-validators:
+  all:
+    validateRequestBody: true
+    validateRequestParameters: true
+x-amazon-apigateway-request-validator: all        

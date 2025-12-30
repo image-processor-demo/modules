@@ -25,7 +25,16 @@ resource "aws_iam_policy" "lambda_policy" {
           "S3:GetObject",
         ]
         Effect   = "Allow"
-        Resource = "${aws_s3_bucket.artifacts-bucket.arn}/*"
+        Resource = "arn:aws:s3:::${var.artifacts_bucket_name}/*"
+      },
+      {
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+        ]
+        Effect   = "Allow"
+        Resource = "*"
       }
     ]
   })

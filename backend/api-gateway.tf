@@ -14,7 +14,7 @@ resource "aws_api_gateway_rest_api" "api_gateway" {
 
 resource "aws_api_gateway_deployment" "api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.api_gateway.id
-
+  depends_on  = [aws_lambda_permission.apigw]
   triggers = {
     redeployment = sha1(jsonencode(aws_api_gateway_rest_api.api_gateway.body))
   }
@@ -23,6 +23,27 @@ resource "aws_api_gateway_deployment" "api_deployment" {
     create_before_destroy = true
   }
 
+
+}
+
+resource "aws_api_gateway_stage" "stage" {
+  rest_api_id   = aws_api_gateway_rest_api.api_gateway.id
+  deployment_id = aws_api_gateway_deployment.api_deployment.id
+  stage_name    = var.environment
+
+}
+
+resource "aws_api_gateway_method_settings" "all" {
+  rest_api_id = aws_api_gateway_rest_api.api_gateway.id
+  stage_name  = aws_api_gateway_stage.stage.stage_name
+  method_path = "/*/*"
+
+  settings {
+    throttling_rate_limit  = 10
+    throttling_burst_limit = 5
+    metrics_enabled        = true
+    logging_level          = "INFO"
+  }
 }
 
 resource "aws_lambda_permission" "apigw" {

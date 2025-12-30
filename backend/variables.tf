@@ -3,13 +3,30 @@ variable "environment" {
   type        = string
 }
 
-variable "filename" {
-  description = "The path to the Lambda function deployment package."
+variable "artifact_key" {
+  description = "S3 object key for the Lambda artifact"
   type        = string
 }
+
 
 variable "aws_region" {
   description = "The AWS region where the resources will be deployed."
   type        = string
   default     = "eu-west-1"
+}
+
+variable "artifacts_bucket_name" {
+  description = "S3 bucket where Lambda artifacts are stored"
+  type        = string
+}
+
+variable "cloudfront_distribution_arn" {
+  description = "ARN of the CloudFront distribution to invalidate"
+  type        = string
+}
+
+variable "api_shared_secret" {
+  description = "Shared secret used to verify API origin"
+  type        = string
+  sensitive   = true
 }
