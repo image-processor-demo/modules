@@ -20,11 +20,6 @@ variable "artifacts_bucket_name" {
   type        = string
 }
 
-variable "cloudfront_distribution_arn" {
-  description = "ARN of the CloudFront distribution to invalidate"
-  type        = string
-}
-
 variable "api_shared_secret" {
   description = "Shared secret used to verify API origin"
   type        = string
