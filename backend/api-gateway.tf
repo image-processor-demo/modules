@@ -12,10 +12,6 @@ resource "aws_api_gateway_rest_api" "api_gateway" {
   }
 }
 
-resource "aws_api_gateway_account" "account" {
-  cloudwatch_role_arn = aws_iam_role.apigateway_cloudwatch.arn
-}
-
 resource "aws_api_gateway_deployment" "api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.api_gateway.id
   depends_on  = [aws_lambda_permission.apigw]
