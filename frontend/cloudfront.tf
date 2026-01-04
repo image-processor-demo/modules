@@ -4,9 +4,10 @@ resource "aws_cloudfront_distribution" "frontend_distribution" {
     domain_name = aws_s3_bucket.frontend_bucket.bucket_regional_domain_name
     origin_id   = "S3-frontend-bucket"
 
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.frontend_oai.cloudfront_access_identity_path
-    }
+    // s3_origin_config {
+    # no origin_access_identity here when using OAC
+    // }
+    origin_access_control_id = aws_cloudfront_origin_access_control.frontend_oac.id
   }
 
   # --- API Gateway origin for backend ---
@@ -80,4 +81,12 @@ resource "aws_cloudfront_distribution" "frontend_distribution" {
     ManagedBy   = "Terraform"
     Project     = "image-processor"
   }
+}
+
+resource "aws_cloudfront_origin_access_control" "frontend_oac" {
+  name                              = "frontend-oac"
+  description                       = "OAC for frontend S3 bucket"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
 }

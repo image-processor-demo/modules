@@ -7,5 +7,5 @@ output "api_gateway_stage_name" {
 }
 
 output "lambda_function_arn" {
-  value = aws_lambda_function.image_processor-function.arn
+  value = aws_lambda_function.image-processor-function.arn
 }
