@@ -11,9 +11,9 @@ resource "aws_cloudfront_distribution" "frontend_distribution" {
 
   # --- API Gateway origin for backend ---
   origin {
-    domain_name = module.backend.api_gateway_domain_name
+    domain_name = var.api_gateway_domain_name
     origin_id   = "api-origin"
-    origin_path = "/${module.backend.api_gateway_stage_name}"
+    origin_path = "/${var.api_gateway_stage_name}"
 
     custom_header {
       name  = "X-Origin-Verify"
