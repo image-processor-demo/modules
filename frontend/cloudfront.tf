@@ -1,12 +1,8 @@
 resource "aws_cloudfront_distribution" "frontend_distribution" {
   # --- S3 origin for frontend ---
   origin {
-    domain_name = aws_s3_bucket.frontend_bucket.bucket_regional_domain_name
-    origin_id   = "S3-frontend-bucket"
-
-    // s3_origin_config {
-    # no origin_access_identity here when using OAC
-    // }
+    domain_name              = aws_s3_bucket.frontend_bucket.bucket_regional_domain_name
+    origin_id                = "S3-frontend-bucket"
     origin_access_control_id = aws_cloudfront_origin_access_control.frontend_oac.id
   }
 
@@ -81,6 +77,10 @@ resource "aws_cloudfront_distribution" "frontend_distribution" {
     ManagedBy   = "Terraform"
     Project     = "image-processor"
   }
+  depends_on = [
+    aws_s3_bucket.frontend_bucket,
+    aws_s3_bucket_policy.frontend_bucket_policy
+  ]
 }
 
 resource "aws_cloudfront_origin_access_control" "frontend_oac" {
