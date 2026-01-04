@@ -78,8 +78,7 @@ resource "aws_cloudfront_distribution" "frontend_distribution" {
     Project     = "image-processor"
   }
   depends_on = [
-    aws_s3_bucket.frontend_bucket,
-    aws_s3_bucket_policy.frontend_bucket_policy
+    aws_s3_bucket.frontend_bucket
   ]
 }
 
