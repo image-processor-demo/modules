@@ -56,7 +56,10 @@ resource "aws_cloudfront_distribution" "frontend_distribution" {
 
     forwarded_values {
       query_string = true
-      headers      = ["*"] # forward headers so API Gateway sees them
+      headers = [
+        "X-Origin-Verify",
+        "Content-Type"
+      ] # forward headers so API Gateway sees them
       cookies {
         forward = "all"
       }
