@@ -2,16 +2,11 @@ openapi: "3.0.1"
 info:
   title: Image Processor API
   version: 1.0.0
+
 paths:
   /process:
     post:
       summary: Process an image
-      parameters:
-        - in: header
-          name: X-Origin-Verify
-          required: true
-          schema:
-            type: string
       responses:
         "200":
           description: Successful response
@@ -20,7 +15,8 @@ paths:
               schema:
                 type: string
                 format: binary
+
       x-amazon-apigateway-integration:
         type: aws_proxy
         httpMethod: POST
-        uri: arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/${lambda_function_arn}/invocations 
+        uri: arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/${lambda_function_arn}/invocations
