@@ -20,3 +20,6 @@ paths:
         type: aws_proxy
         httpMethod: POST
         uri: arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/${lambda_function_arn}/invocations
+x-amazon-apigateway-binary-media-types:
+  - "multipart/form-data"
+  - "image/*"
