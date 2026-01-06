@@ -106,7 +106,7 @@ resource "aws_cloudfront_cache_policy" "api_no_cache" {
     enable_accept_encoding_brotli = false
 
     cookies_config {
-      cookie_behavior = "all"
+      cookie_behavior = "none"
     }
 
     headers_config {
@@ -114,10 +114,11 @@ resource "aws_cloudfront_cache_policy" "api_no_cache" {
     }
 
     query_strings_config {
-      query_string_behavior = "all"
+      query_string_behavior = "none"
     }
   }
 }
+
 
 resource "aws_cloudfront_origin_request_policy" "api_all" {
   name = "api-origin-request-policy"
