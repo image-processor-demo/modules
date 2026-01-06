@@ -50,25 +50,22 @@ resource "aws_cloudfront_distribution" "frontend_distribution" {
   # Ordered behavior → API Gateway
   ordered_cache_behavior {
     path_pattern     = "/api/*"
-    allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
-    cached_methods   = ["GET", "HEAD"]
     target_origin_id = "api-origin"
 
-    compress = false
-    forwarded_values {
-      query_string = true
-      headers = [
-        "Content-Type"
-      ] # forward headers so API Gateway sees them
-      cookies {
-        forward = "all"
-      }
-    }
+    allowed_methods = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+    cached_methods  = ["GET", "HEAD"]
 
     viewer_protocol_policy = "redirect-to-https"
-    min_ttl                = 0
-    default_ttl            = 0
-    max_ttl                = 0
+
+    # 🚨 REQUIRED
+    compress = false
+
+    cache_policy_id          = aws_cloudfront_cache_policy.api_no_cache.id
+    origin_request_policy_id = aws_cloudfront_origin_request_policy.api_all.id
+
+    min_ttl     = 0
+    default_ttl = 0
+    max_ttl     = 0
   }
 
   viewer_certificate {
@@ -95,4 +92,45 @@ resource "aws_cloudfront_origin_access_control" "frontend_oac" {
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
+}
+
+resource "aws_cloudfront_cache_policy" "api_no_cache" {
+  name = "api-no-cache-policy"
+
+  default_ttl = 0
+  max_ttl     = 0
+  min_ttl     = 0
+
+  parameters_in_cache_key_and_forwarded_to_origin {
+    enable_accept_encoding_gzip   = false
+    enable_accept_encoding_brotli = false
+
+    cookies_config {
+      cookie_behavior = "all"
+    }
+
+    headers_config {
+      header_behavior = "none"
+    }
+
+    query_strings_config {
+      query_string_behavior = "all"
+    }
+  }
+}
+
+resource "aws_cloudfront_origin_request_policy" "api_all" {
+  name = "api-origin-request-policy"
+
+  cookies_config {
+    cookie_behavior = "all"
+  }
+
+  headers_config {
+    header_behavior = "allViewer"
+  }
+
+  query_strings_config {
+    query_string_behavior = "all"
+  }
 }
