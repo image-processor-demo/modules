@@ -1,7 +1,13 @@
 resource "aws_api_gateway_rest_api" "api_gateway" {
   name        = "image-processor-api-${var.environment}"
   description = "API Gateway for Image Processor Application"
-
+  # REQUIRED for images to render correctly
+  binary_media_types = [
+    "image/jpeg",
+    "image/png",
+    "image/*",
+    "multipart/form-data"
+  ]
   body = templatefile("${path.module}/openapi.yml", {
     lambda_function_arn = aws_lambda_function.image-processor-function.arn
     aws_region          = var.aws_region
@@ -16,7 +22,7 @@ resource "aws_api_gateway_deployment" "api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.api_gateway.id
   depends_on  = [aws_lambda_permission.apigw]
   triggers = {
-    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.api_gateway.body))
+    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.api_gateway))
   }
 
   lifecycle {
