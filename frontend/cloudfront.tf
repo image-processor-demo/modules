@@ -131,6 +131,7 @@ resource "aws_cloudfront_origin_request_policy" "api_all" {
     header_behavior = "whitelist"
     headers {
       items = [
+        "Accept",
         "Content-Type",
         "X-Origin-Verify"
       ]
