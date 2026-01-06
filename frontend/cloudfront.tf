@@ -128,7 +128,13 @@ resource "aws_cloudfront_origin_request_policy" "api_all" {
   }
 
   headers_config {
-    header_behavior = "allViewer"
+    header_behavior = "whitelist"
+    headers {
+      items = [
+        "Content-Type",
+        "X-Origin-Verify"
+      ]
+    }
   }
 
   query_strings_config {
