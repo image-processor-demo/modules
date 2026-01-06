@@ -54,6 +54,7 @@ resource "aws_cloudfront_distribution" "frontend_distribution" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "api-origin"
 
+    compress = false
     forwarded_values {
       query_string = true
       headers = [
