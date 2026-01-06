@@ -57,11 +57,11 @@ resource "aws_cloudfront_distribution" "frontend_distribution" {
 
     viewer_protocol_policy = "redirect-to-https"
 
-    # 🚨 REQUIRED
     compress = false
 
-    cache_policy_id          = aws_cloudfront_cache_policy.api_no_cache.id
-    origin_request_policy_id = aws_cloudfront_origin_request_policy.api_all.id
+    # Use AWS managed policies for binary response handling
+    cache_policy_id          = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad" # Managed-CachingDisabled
+    origin_request_policy_id = "216adef6-5c7f-47e4-b989-5492eafa07d3" # Managed-AllViewer
 
     min_ttl     = 0
     default_ttl = 0
@@ -94,51 +94,7 @@ resource "aws_cloudfront_origin_access_control" "frontend_oac" {
   signing_protocol                  = "sigv4"
 }
 
-resource "aws_cloudfront_cache_policy" "api_no_cache" {
-  name = "api-no-cache-policy"
-
-  default_ttl = 0
-  max_ttl     = 0
-  min_ttl     = 0
-
-  parameters_in_cache_key_and_forwarded_to_origin {
-    enable_accept_encoding_gzip   = false
-    enable_accept_encoding_brotli = false
-
-    cookies_config {
-      cookie_behavior = "none"
-    }
-
-    headers_config {
-      header_behavior = "none"
-    }
-
-    query_strings_config {
-      query_string_behavior = "none"
-    }
-  }
-}
-
-
-resource "aws_cloudfront_origin_request_policy" "api_all" {
-  name = "api-origin-request-policy"
-
-  cookies_config {
-    cookie_behavior = "all"
-  }
-
-  headers_config {
-    header_behavior = "whitelist"
-    headers {
-      items = [
-        "Accept",
-        "Content-Type",
-        "X-Origin-Verify"
-      ]
-    }
-  }
-
-  query_strings_config {
-    query_string_behavior = "all"
-  }
-}
+# Remove the custom policies - we're using AWS managed ones now
+# You can delete these two resources:
+# - aws_cloudfront_cache_policy.api_no_cache
+# - aws_cloudfront_origin_request_policy.api_all
