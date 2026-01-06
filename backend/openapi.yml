@@ -7,6 +7,8 @@ paths:
   /api/process:
     post:
       summary: Process an image
+      produces:
+        - image/jpeg
       responses:
         "200":
           description: Successful response
@@ -15,11 +17,12 @@ paths:
               schema:
                 type: string
                 format: binary
-
       x-amazon-apigateway-integration:
         type: aws_proxy
         httpMethod: POST
         uri: arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/${lambda_function_arn}/invocations
+        passthroughBehavior: "when_no_match"
+        contentHandling: "CONVERT_TO_BINARY"
         
 x-amazon-apigateway-binary-media-types:
   - "multipart/form-data"
